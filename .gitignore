@@ -34,4 +34,7 @@ vignettes/*.pdf
 
 Coursera-SwiftKey.zip
 original_data/*
-data/en_US/*
+data/en_US/en_US/*
+data/en_US/en_US.news.txt
+data/en_US/en_US.twitter.txt
+data/en_US/en_US.blogs.txt
