@@ -3,6 +3,7 @@ library(caret)
 baseDataDir <- "data/en_US/";
 
 readDataFile <- function(dataFileName) {
+#  tmpFile <- readLines(dataFileName,  encoding = "UTF-8" )
   tmpFile <- readLines(dataFileName)
   tmpFile <-as.data.frame(tmpFile)
   tmpFile
@@ -47,19 +48,13 @@ if (!exists("full_twitter_data")) {
 }
 
 ######### Build 100-line files #####
-buildFullSet(seed=42,smplsize = 100,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
-buildFullSet(seed=42,smplsize = 1000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
-buildFullSet(seed=42,smplsize = 8000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
-buildFullSet(seed=68,smplsize = 1000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
-buildFullSet(seed=1986,smplsize = 5000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+doFiles <- FALSE;
+if (doFiles) {
+  buildFullSet(seed=42,smplsize = 100,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+  buildFullSet(seed=42,smplsize = 1000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+  buildFullSet(seed=42,smplsize = 8000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+  buildFullSet(seed=68,smplsize = 1000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+  buildFullSet(seed=1986,smplsize = 5000,blogData = full_blogs_data,newsData = full_news_data, twitterData = full_twitter_data);
+}
 
-end.time <- Sys.time()
-time.taken <- paste( as.numeric(round(end.time - start.time,3)*1000), "milliseconds")
-time.taken
-
-##thisSeed = 42;
-##thisSampSize=100;
-##buildOutputFile(seed2use=thisSeed,smpSize2use = thisSampSize,dataObjName = full_blogs_data,baseFileName = "en_US.blogs")
-##buildOutputFile(seed2use=thisSeed,smpSize2use = thisSampSize,dataObjName = full_news_infile,baseFileName = "en_US.news")
-##buildOutputFile(seed2use=thisSeed,smpSize2use = thisSampSize,dataObjName = full_twitter_infile,baseFileName = "en_US.twitter")
 
