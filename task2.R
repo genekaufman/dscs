@@ -21,3 +21,9 @@ datafile <- readDataFileAsVector(dataFileName);
 
 
 myngram <- ngram(datafile,n=2);
+
+my1gram <- ngram(datafile,n=1)
+my1gram.pt <- get.phrasetable(my1gram)
+head(my1gram.pt,n=10)
+my2gram.pt <- get.phrasetable(myngram)
+head(my2gram.pt)
