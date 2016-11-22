@@ -1,0 +1,23 @@
+# if we don't have the data available, then go get it
+#if (!exists("full_news_data")) {
+  source('load_data_files.R')
+#}
+library(ngram)
+  #https://cran.r-project.org/web/packages/ngram/ngram.pdf
+
+  readDataFileAsVector <- function(dataFileName) {
+    #  tmpFile <- readLines(dataFileName,  encoding = "UTF-8" )
+    tmpFile <- readLines(dataFileName);
+    tmpFile <- as.vector(tmpFile);
+    tmpFile
+  }
+
+
+
+baseDataDir <- "data/en_US/";
+dataFileName <- "en_US.twitter_smp_100_seed42.txt";
+dataFileName <- paste0(baseDataDir,dataFileName);
+datafile <- readDataFileAsVector(dataFileName);
+
+
+myngram <- ngram(datafile,n=2);
