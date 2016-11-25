@@ -1,5 +1,5 @@
 # if we don't have the data available, then go get it
-#if (!exists("full_news_data")) {
+#if (!exists("data_news_full")) {
   source('load_data_files.R')
 #}
 library(ngram)
