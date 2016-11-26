@@ -3,6 +3,11 @@ source('load_data_files.R')
 library("tm")
 baseDataDir <- "data/en_US/";
 
+betterMessage <- function(strIn) {
+  message(paste0('[',date(),'] ',strIn));
+
+}
+
 countWords <- function(dataIn) {
 
   tempCorpus <- VCorpus(VectorSource( dataIn) );
@@ -16,25 +21,27 @@ countWords <- function(dataIn) {
 }
 
 createCorpus <- function (dataIn,dataFileRDS) {
-  #tempCorpus <- VCorpus(VectorSource( dataIn) );
+  betterMessage(paste('####### createCorpus #######'));
+
   objName <- deparse(substitute(dataIn));
   objCorpName <- gsub('data_','corp_',objName);
   if (!exists(objCorpName)) {
-    message(paste(date(),'Corpus',objCorpName,'does not exist'));
+    betterMessage(paste('Corpus',objCorpName,'does not exist'));
     corpusTempRDSFile <- paste0(baseDataDir, paste0(objCorpName,'.Rds') );
 
     if (file.exists(corpusTempRDSFile)) {
-      message(paste(date(),'Reading', corpusTempRDSFile));
+      betterMessage(paste('Reading', corpusTempRDSFile));
       tempCorp <- readRDS(corpusTempRDSFile)
     } else {
-      message(paste(date(), corpusTempRDSFile,'does not exist, creating',objCorpName ));
+      betterMessage(paste(corpusTempRDSFile,'does not exist, creating',objCorpName));
       tempCorp <- VCorpus(VectorSource( dataIn) );
-      message(paste(date(), objCorpName,'created, saving to',corpusTempRDSFile ));
+      betterMessage(paste(objCorpName,'created, saving to',corpusTempRDSFile ));
       saveRDS(tempCorp,file=corpusTempRDSFile);
     }
-    assign(objCorpName,tempCorp);
+    #assign(objCorpName,tempCorp);
   }
-  message(paste(date(),objCorpName,'is ready for action!'));
+  betterMessage(paste(objCorpName,'is ready for action!'));
+  tempCorp;
 }
 
 
@@ -60,15 +67,15 @@ longestLines <- c(which.max(numCharsB),
 rm(list=ls(pattern='numChars'));
 }
 
-message(paste(date(),'Checking for Corpus objects'));
-#createCorpus(data_blogs_full);
-#createCorpus(data_news_full);
-rm(data_blogs_full);
-rm(data_news_full);
-createCorpus(data_twitter_full);
+betterMessage(paste('Checking for Corpus objects'));
+corp_blogs_full <- createCorpus(data_blogs_full);
+corp_news_full <- createCorpus(data_news_full);
+#rm(data_blogs_full);
+#rm(data_news_full);
+corp_twitter_full <- createCorpus(data_twitter_full);
 
 #wordCounts <- c(countWords(data_blogs_full),
 #                countWords(data_news_full),
 #                countWords(data_twitter_full));
-message(paste(date(),'Corpus objects done'));
+betterMessage(paste('Corpus objects done'));
 
