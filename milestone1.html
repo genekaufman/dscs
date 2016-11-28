@@ -211,8 +211,7 @@ wordCounts &lt;- c(wordcountsRaw$NumWords[wordcountsRaw$DataFile==full_blogs_fil
 <h2>Summary table</h2>
 <pre class="r"><code>summ_table&lt;- data.frame(c(full_blogs_file, full_news_file,full_twitter_file),lineCounts,as.array(longestLines),wordCounts)
 colnames(summ_table) &lt;- c('File','LineCounts','LongestLine','WordCounts')</code></pre>
-<pre class="r"><code>#knitr::kable(summ_table)
-summ_table;</code></pre>
+<pre class="r"><code>summ_table;</code></pre>
 <pre><code>##                File LineCounts LongestLine WordCounts
 ## 1   en_US.blogs.txt     899288       40835   37334114
 ## 2    en_US.news.txt      77259        5760   34365936

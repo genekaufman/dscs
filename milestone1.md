@@ -119,7 +119,6 @@ colnames(summ_table) <- c('File','LineCounts','LongestLine','WordCounts')
 
 
 ```r
-#knitr::kable(summ_table)
 summ_table;
 ```
 
