@@ -11,12 +11,20 @@ readDataFile <- function(dataFileName) {
   tmpFile
 }
 
+betterMessage <- function(strIn) {
+  message(paste0('[',date(),'] ',strIn));
+
+}
 
 
 # build more manageable data files
-full_blogs_infile <- paste0(baseDataDir, "en_US.blogs.txt");
-full_news_infile <- paste0(baseDataDir, "en_US.news.txt");
-full_twitter_infile <- paste0(baseDataDir, "en_US.twitter.txt");
+full_blogs_file <- "en_US.blogs.txt";
+full_news_file <-  "en_US.news.txt";
+full_twitter_file <-  "en_US.twitter.txt";
+
+full_blogs_infile <- paste0(baseDataDir, full_blogs_file);
+full_news_infile <- paste0(baseDataDir, full_news_file);
+full_twitter_infile <- paste0(baseDataDir, full_twitter_file);
 
 if (!exists("data_blogs_full")) {
   data_blogs_full_RDSfile <- paste0(baseDataDir, "data_blogs_full.Rds");
@@ -90,6 +98,6 @@ rm(list=ls(pattern='RDSfile'));
 rm(list=ls()[substr(ls(),1,5) != 'data_' ]);
 
 #rm(list=ls()[ls()!="data_blogs_full" & ls()!="data_twitter_full" & ls()!="data_news_full" & ls()!="readDataFile"])
-message("Data loaded, ready for processing")
+betterMessage("Data loaded, ready for processing")
 
 

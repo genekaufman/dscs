@@ -1,0 +1,4 @@
+ 37334114 en_US.blogs.txt
+ 34365936 en_US.news.txt
+ 30359852 en_US.twitter.txt
+102059902 total
