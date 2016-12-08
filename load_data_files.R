@@ -30,13 +30,19 @@ createDataObject <- function (dataIn, sampPerc=1) {
     objDataFull <- paste0(objDataName,'_full');
     objDataName <- paste0(objDataName,'_samp');
   }
+  objDataNameDF <- paste0(objDataName,'_DF');
   if (!exists(objDataName)) {
     betterMessage(paste('Object',objDataName,'does not exist'));
     TempRDSFile <- paste0(baseDataDir, paste0(objDataName,'.Rds') );
+    TempRDS_DFFile <- paste0(baseDataDir, paste0(objDataNameDF,'.Rds') );
 
-    if (file.exists(TempRDSFile)) {
+    if (file.exists(TempRDSFile) && (file.exists(TempRDS_DFFile))) {
       betterMessage(paste('Reading', TempRDSFile));
       tempObj <- readRDS(TempRDSFile)
+      if (file.exists(TempRDS_DFFile)) {
+        betterMessage(paste('Reading', TempRDS_DFFile));
+        objDataNameDF <- readRDS(TempRDS_DFFile);
+      }
     } else {
       betterMessage(paste(TempRDSFile,'does not exist, creating',objDataName));
       TempDataFile <- paste0(baseDataDir, dataIn )
@@ -57,6 +63,11 @@ message(paste('50 num_rows:',num_rows));
         }
         betterMessage(paste(objDataName,'created, saving to',TempRDSFile ));
         saveRDS(tempObj,file=TempRDSFile);
+        betterMessage(paste(objDataNameDF,' started build'));
+        objDataNameDF <- as.data.frame(tempObj);
+        betterMessage(paste(objDataNameDF,'created, saving to',TempRDS_DFFile ));
+        saveRDS(objDataNameDF,file=TempRDS_DFFile);
+
       } else {
         stop(paste('Error!',TempDataFile,' does not exist!'));
       }
@@ -96,9 +107,20 @@ if (!exists("data_blogs_full")) {
   } else {
     data_blogs_full <- readDataFile(full_blogs_infile);
     saveRDS(data_blogs_full,file=data_blogs_full_RDSfile);
+    data_blogs_full
   }
 }
-if (!exists("data_news_full")) {
+if (!exists("data_blogs_full_DF")) {
+  data_blogs_full_DF_RDSfile <- paste0(baseDataDir, "data_blogs_full_DF.Rds");
+  if (file.exists(data_blogs_full_DF_RDSfile)) {
+    data_blogs_full_DF <- readRDS(data_blogs_full_DF_RDSfile)
+  } else {
+    data_blogs_full_DF <- as.data.frame(data_blogs_full)
+    saveRDS(data_blogs_full_DF,file=data_blogs_full_DF_RDSfile);
+  }
+}
+
+  if (!exists("data_news_full")) {
   data_news_full_RDSfile <- paste0(baseDataDir, "data_news_full.Rds");
   if (file.exists(data_news_full_RDSfile)) {
     data_news_full <- readRDS(data_news_full_RDSfile)

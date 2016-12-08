@@ -1,6 +1,8 @@
 # if we don't have the data available, then go get it
 #if (!exists("data_news_full")) {
-  source('load_data_files.R')
+  source('load_data_files.R');
+  source('readfiles1.R')
+
 #}
 library(ngram)
   #https://cran.r-project.org/web/packages/ngram/ngram.pdf
