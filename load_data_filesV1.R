@@ -11,9 +11,11 @@ readDataFile <- function(dataFileName) {
   tmpFile
 }
 
-betterMessage <- function(strIn) {
-  message(paste0('[',date(),'] ',strIn));
+if (!exists("betterMessage")) {
+  betterMessage <- function(strIn) {
+    message(paste0('[',date(),'] ',strIn));
 
+  }
 }
 
 
