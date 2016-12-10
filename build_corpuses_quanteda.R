@@ -138,7 +138,7 @@ rm(list=ls(pattern='data_twitter'));
 data_news_samp_0.01 <- data_news_samp;
 rm(data_news_samp);
 corp_news_samp <- createCorpus(data_news_samp_0.01);
-tdm_news_samp <- makeTDM(corp_news_samp);
+tdm_news_samp <- makeDFM(corp_news_samp);
 rm(corp_news_samp);
 rm(list=ls(pattern='data_news'));
 
