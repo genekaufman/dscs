@@ -46,7 +46,7 @@ makeDFM <- function (dataIn) {
   betterMessage(paste('####### makeDFM #######'));
 
   objName <- deparse(substitute(dataIn));
-  objDFMName <- gsub('corp_','dfm_',objName);
+  objDFMName <- gsub('data_','dfm_',objName);
   if (!exists(objDFMName)) {
     betterMessage(paste('DFM',objDFMName,'does not exist'));
     tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
@@ -56,12 +56,12 @@ makeDFM <- function (dataIn) {
       objDFMName <- readRDS(tdmTempRDSFile)
     } else {
       betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
-      tempTDM <- Corpus(VectorSource( dataIn) );
+#      tempTDM <- Corpus(VectorSource( dataIn) );
 #      tempMap <- tm_map(tempTDM, content_transformer(tolower))
 #      tempMap <- tm_map(tempMap, removePunctuation)
 #      tempMap <- tm_map(tempMap, removeNumbers)
 #      tempMap <- tm_map(tempMap, stripWhitespace)
-      objDFMName <- dfm(tempTDM, verbose = TRUE, stem = FALSE,
+      objDFMName <- dfm(dataIn, verbose = TRUE, stem = FALSE,
                         removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
                         removeSeparators = TRUE, ngrams=1 )
       betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
@@ -106,10 +106,10 @@ rm(list=ls(pattern='data_twitter'));
 
 data_news_samp_0.01 <- data_news_samp;
 #rm(data_news_samp);
-corp_news_samp <- createCorpus(data_news_samp_0.01);
-tdm_news_samp <- makeDFM(corp_news_samp);
-rm(corp_news_samp);
-rm(list=ls(pattern='data_news'));
+##corp_news_samp <- createCorpus(data_news_samp_0.01);
+tdm_news_samp <- makeDFM(data_news_samp_0.01);
+#rm(corp_news_samp);
+#rm(list=ls(pattern='data_news'));
 
 
 #betterMessage(paste('Calculating wordCounts'));
