@@ -53,7 +53,7 @@ makeDFM <- function (dataIn) {
 
     if (file.exists(tdmTempRDSFile)) {
       betterMessage(paste('Reading', tdmTempRDSFile));
-      tempTDM <- readRDS(tdmTempRDSFile)
+      objDFMName <- readRDS(tdmTempRDSFile)
     } else {
       betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
 #      tempTDM <- Corpus(VectorSource( dataIn) );
@@ -70,38 +70,7 @@ makeDFM <- function (dataIn) {
 
   }
   betterMessage(paste(objTDMName,'is ready for action!'));
-  tempTDM;
-}
-
-
-makeTDM_tm <- function (dataIn) {
-  betterMessage(paste('####### makeTDM #######'));
-
-  objName <- deparse(substitute(dataIn));
-  objTDMName <- gsub('corp_','tdm_',objName);
-  if (!exists(objTDMName)) {
-    betterMessage(paste('TDM',objTDMName,'does not exist'));
-    tdmTempRDSFile <- paste0(baseDataDir, paste0(objTDMName,'.Rds') );
-
-    if (file.exists(tdmTempRDSFile)) {
-      betterMessage(paste('Reading', tdmTempRDSFile));
-      tempTDM <- readRDS(tdmTempRDSFile)
-    } else {
-      betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objTDMName));
-      tempTDM <- Corpus(VectorSource( dataIn) );
-      tempMap <- tm_map(tempTDM, content_transformer(tolower))
-      tempMap <- tm_map(tempMap, removePunctuation)
-      tempMap <- tm_map(tempMap, removeNumbers)
-      tempMap <- tm_map(tempMap, stripWhitespace)
-      objTDMName <- TermDocumentMatrix(tempMap,control = list(tokenize=TrigramTokenizer))
-
-      betterMessage(paste(objTDMName,'created, saving to',tdmTempRDSFile ));
-      saveRDS(objTDMName,file=tdmTempRDSFile);
-    }
-
-  }
-  betterMessage(paste(objTDMName,'is ready for action!'));
-  tempTDM;
+  objDFMName;
 }
 
 
@@ -136,7 +105,7 @@ rm(list=ls(pattern='data_twitter'));
 }
 
 data_news_samp_0.01 <- data_news_samp;
-rm(data_news_samp);
+#rm(data_news_samp);
 corp_news_samp <- createCorpus(data_news_samp_0.01);
 tdm_news_samp <- makeDFM(corp_news_samp);
 rm(corp_news_samp);
