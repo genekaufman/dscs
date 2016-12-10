@@ -1,7 +1,7 @@
 library(caret)
 
 baseDataDir <- "data/en_US/";
-samp_perc <- 0.1;
+samp_perc <- 0.01;
 set.seed(42);
 
 readDataFile <- function(dataFileName) {
