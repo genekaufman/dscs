@@ -1,5 +1,6 @@
 # if we don't have the data available, then go get it
 source('load_data_filesV1.R')
+library("tm")
 library("quanteda")
 
 baseDataDir <- "data/en_US/";
