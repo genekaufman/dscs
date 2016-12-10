@@ -56,7 +56,7 @@ makeDFM <- function (dataIn) {
       objDFMName <- readRDS(tdmTempRDSFile)
     } else {
       betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
-#      tempTDM <- Corpus(VectorSource( dataIn) );
+      tempTDM <- Corpus(VectorSource( dataIn) );
 #      tempMap <- tm_map(tempTDM, content_transformer(tolower))
 #      tempMap <- tm_map(tempMap, removePunctuation)
 #      tempMap <- tm_map(tempMap, removeNumbers)
