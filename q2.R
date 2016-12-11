@@ -1,0 +1,6 @@
+dfm_news_samp_0.01_n3 <- readRDS("dfm_news_samp_0.01_n3.Rds")
+dfm_news_samp_0.01_n3 <- readRDS("data/en_US/dfm_news_samp_0.01_n3.Rds")
+news_n3_freq <- colSums(dfm_news_samp_0.01_n3)
+news_n3_freq_sort <- sort(news_n3_freq,decreasing = TRUE)
+source('D:/coursera/dscs/funcs.R')
+nnfs <- findTerms("your_",news_n3_freq_sort)
