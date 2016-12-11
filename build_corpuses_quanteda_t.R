@@ -39,12 +39,14 @@ objName <- paste0(dfmName,'_n',ngramsize);
 objDFMName <- gsub('data_','dfm_',objName);
 tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
 
-betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
-objDFMName <- dfm(data_twitter_samp_0.01, verbose = TRUE, stem = FALSE,
-                  removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
-                  removeSeparators = TRUE, ngrams=ngramsize )
-betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
-saveRDS(objDFMName,file=tdmTempRDSFile);
+if (!exists(tdmTempRDSFile)) {
+  betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
+  objDFMName <- dfm(data_twitter_samp_0.01, verbose = TRUE, stem = FALSE,
+                    removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
+                    removeSeparators = TRUE, ngrams=ngramsize )
+  betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
+  saveRDS(objDFMName,file=tdmTempRDSFile);
+}
 
 ngramsize = 2
 dfmName <- deparse(substitute(data_twitter_samp_0.01));
@@ -52,27 +54,60 @@ objName <- paste0(dfmName,'_n',ngramsize);
 objDFMName <- gsub('data_','dfm_',objName);
 tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
 
-betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
-objDFMName <- dfm(data_news_samp_0.01, verbose = TRUE, stem = FALSE,
-                  removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
-                  removeSeparators = TRUE, ngrams=ngramsize )
-betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
-saveRDS(objDFMName,file=tdmTempRDSFile);
+if (!exists(tdmTempRDSFile)) {
+  betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
+  objDFMName <- dfm(data_news_samp_0.01, verbose = TRUE, stem = FALSE,
+                    removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
+                    removeSeparators = TRUE, ngrams=ngramsize )
+  betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
+  saveRDS(objDFMName,file=tdmTempRDSFile);
+}
+
 
 ngramsize = 3
 dfmName <- deparse(substitute(data_twitter_samp_0.01));
 objName <- paste0(dfmName,'_n',ngramsize);
 objDFMName <- gsub('data_','dfm_',objName);
-  tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
+tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
 
+if (!exists(tdmTempRDSFile)) {
     betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
     objDFMName <- dfm(data_news_samp_0.01, verbose = TRUE, stem = FALSE,
                       removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
                       removeSeparators = TRUE, ngrams=ngramsize )
     betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
     saveRDS(objDFMName,file=tdmTempRDSFile);
+}
 
+ngramsize = 4
+dfmName <- deparse(substitute(data_twitter_samp_0.01));
+objName <- paste0(dfmName,'_n',ngramsize);
+objDFMName <- gsub('data_','dfm_',objName);
+tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
 
+if (!exists(tdmTempRDSFile)) {
+    betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
+    objDFMName <- dfm(data_news_samp_0.01, verbose = TRUE, stem = FALSE,
+                      removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
+                      removeSeparators = TRUE, ngrams=ngramsize )
+    betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
+    saveRDS(objDFMName,file=tdmTempRDSFile);
+}
+
+ngramsize = 5
+dfmName <- deparse(substitute(data_twitter_samp_0.01));
+objName <- paste0(dfmName,'_n',ngramsize);
+objDFMName <- gsub('data_','dfm_',objName);
+tdmTempRDSFile <- paste0(baseDataDir, paste0(objDFMName,'.Rds') );
+
+if (!exists(tdmTempRDSFile)) {
+    betterMessage(paste(tdmTempRDSFile,'does not exist, creating',objDFMName));
+    objDFMName <- dfm(data_news_samp_0.01, verbose = TRUE, stem = FALSE,
+                      removePunct = TRUE, removeNumbers = TRUE, toLower=TRUE,
+                      removeSeparators = TRUE, ngrams=ngramsize )
+    betterMessage(paste(objDFMName,'created, saving to',tdmTempRDSFile ));
+    saveRDS(objDFMName,file=tdmTempRDSFile);
+}
 #rm(corp_news_samp);
 #rm(list=ls(pattern='data_news'));
 
