@@ -1,8 +1,6 @@
-library(caret)
+#library(caret)
 
 baseDataDir <- "data/en_US/";
-samp_perc <- 0.01;
-samp_perc <- 333;
 set.seed(42);
 
 readDataFile <- function(dataFileName) {
@@ -74,7 +72,7 @@ if (!exists("data_combined_full")) {
     betterMessage(paste("Writing combined files"));
     saveRDS(data_combined_full,file=data_combined_full_RDSfile);
   }
-} 
+}
 
 if (exists("data_blogs_full")) {rm(data_blogs_full);}
 if (exists("data_news_full")) {rm(data_news_full);}
@@ -83,11 +81,7 @@ if (exists("data_twitter_full")) {rm(data_twitter_full);}
 rm(list=ls(pattern='RDSfile'));
 #rm(list=ls(pattern='full_'));
 rm(baseDataDir);
-rm(data_samp);
-if (exists("num_rows")) {rm(num_rows);}
-if (exists("num_samples")) {rm(num_samples);}
 #rm(num_samples);
-rm(samp_perc);
 rm(readDataFile);
 #rm(list=ls()[substr(ls(),1,5) != 'data_' ]);
 
