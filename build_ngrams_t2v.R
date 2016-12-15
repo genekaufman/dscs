@@ -137,7 +137,7 @@ if (!exists("ngram6")) {
     ngram6 <- create_vocabulary(tokenObj, ngram = c(6L, 6L)) %>%
       prune_vocabulary(term_count_min = term_count_min_val);
 
-    ngram6$vocab <- ngram6$vocab[order(ngram5$vocab$terms_counts,decreasing = TRUE)];
+    ngram6$vocab <- ngram6$vocab[order(ngram6$vocab$terms_counts,decreasing = TRUE)];
 
     saveRDS(ngram6,file=ngram_RDSfile);
   }
@@ -158,9 +158,72 @@ if (!exists("ngram7")) {
     ngram7 <- create_vocabulary(tokenObj, ngram = c(7L, 7L)) %>%
       prune_vocabulary(term_count_min = term_count_min_val);
 
-    ngram7$vocab <- ngram7$vocab[order(ngram5$vocab$terms_counts,decreasing = TRUE)];
+    ngram7$vocab <- ngram7$vocab[order(ngram7$vocab$terms_counts,decreasing = TRUE)];
 
     saveRDS(ngram7,file=ngram_RDSfile);
   }
 }
 betterMessage("## 7-gram ready!");
+
+########
+#Create 8-gram
+betterMessage("### 8-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n8_s",samp_perc, ".Rds");
+if (!exists("ngram8")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram8 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram8 <- create_vocabulary(tokenObj, ngram = c(8L, 8L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram8$vocab <- ngram8$vocab[order(ngram8$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram8,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 8-gram ready!");
+
+########
+#Create 9-gram
+betterMessage("### 9-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n9_s",samp_perc, ".Rds");
+if (!exists("ngram9")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram9 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram9 <- create_vocabulary(tokenObj, ngram = c(9L, 9L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram9$vocab <- ngram9$vocab[order(ngram9$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram9,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 9-gram ready!");
+
+########
+#Create 10-gram
+betterMessage("### 10-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n10_s",samp_perc, ".Rds");
+if (!exists("ngram10")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram10 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram10 <- create_vocabulary(tokenObj, ngram = c(10L, 10L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram10$vocab <- ngram10$vocab[order(ngram10$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram10,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 10-gram ready!");
