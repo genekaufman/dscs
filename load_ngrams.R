@@ -7,7 +7,7 @@ if (!exists("betterMessage")) {
 baseDataDir <- "data/en_US/";
 
 samp_perc <- 0.5;
-MaxN_Files <- 2;
+MaxN_Files <- 10;
 
 
 for(n in 1:MaxN_Files){
