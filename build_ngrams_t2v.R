@@ -42,7 +42,7 @@ betterMessage("## Unigram ready!");
 ########
 #Create bigram
 betterMessage("### Bigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n1_s_",samp_perc, ".Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n2_s_",samp_perc, ".Rds");
 if (!exists("ngram2")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
