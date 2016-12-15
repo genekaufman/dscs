@@ -39,3 +39,5 @@ data/en_US/en_US.news.txt
 data/en_US/en_US.twitter.txt
 data/en_US/en_US.blogs.txt
 data/en_US/*.Rds
+
+*.pem
