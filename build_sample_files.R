@@ -3,7 +3,7 @@ source('load_data_filesV3.R')
 baseDataDir <- "data/en_US/";
 samp_perc <- 0.01;
 samp_perc <- 333;
-samp_perc <- 0.50;
+samp_perc <- 0.5;
 set.seed(42);
 
 if (!exists("betterMessage")) {
