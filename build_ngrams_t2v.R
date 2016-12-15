@@ -101,3 +101,66 @@ if (!exists("ngram4")) {
   }
 }
 betterMessage("## 4-gram ready!");
+
+########
+#Create 5-gram
+betterMessage("### 5-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n5_s",samp_perc, ".Rds");
+if (!exists("ngram5")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram5 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram5 <- create_vocabulary(tokenObj, ngram = c(5L, 5L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram5$vocab <- ngram5$vocab[order(ngram5$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram5,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 5-gram ready!");
+
+########
+#Create 6-gram
+betterMessage("### 6-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n6_s",samp_perc, ".Rds");
+if (!exists("ngram6")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram6 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram6 <- create_vocabulary(tokenObj, ngram = c(6L, 6L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram6$vocab <- ngram6$vocab[order(ngram5$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram6,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 6-gram ready!");
+
+########
+#Create 7-gram
+betterMessage("### 7-gram ###");
+ngram_RDSfile <- paste0(baseDataDir, "n7_s",samp_perc, ".Rds");
+if (!exists("ngram7")) {
+  if (file.exists(ngram_RDSfile)) {
+    betterMessage(paste(ngram_RDSfile, " exists, loading"));
+    ngram7 <- readRDS(ngram_RDSfile)
+  } else {
+    betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
+
+    ngram7 <- create_vocabulary(tokenObj, ngram = c(7L, 7L)) %>%
+      prune_vocabulary(term_count_min = term_count_min_val);
+
+    ngram7$vocab <- ngram7$vocab[order(ngram5$vocab$terms_counts,decreasing = TRUE)];
+
+    saveRDS(ngram7,file=ngram_RDSfile);
+  }
+}
+betterMessage("## 7-gram ready!");
