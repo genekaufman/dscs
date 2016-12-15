@@ -20,7 +20,7 @@ rm(data_combined_samp);
 ########
 #Create unigram
 betterMessage("### Unigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n1_s_",samp_perc, ".Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n1_s",samp_perc, ".Rds");
 if (!exists("ngram1")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
@@ -42,7 +42,7 @@ betterMessage("## Unigram ready!");
 ########
 #Create bigram
 betterMessage("### Bigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n2_s_",samp_perc, ".Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n2_s",samp_perc, ".Rds");
 if (!exists("ngram2")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
@@ -63,7 +63,7 @@ betterMessage("## Bigram ready!");
 ########
 #Create trigram
 betterMessage("### Trigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n3_s_",samp_perc, ".Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n3_s",samp_perc, ".Rds");
 if (!exists("ngram3")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
@@ -84,7 +84,7 @@ betterMessage("## Trigram ready!");
 ########
 #Create 4-gram
 betterMessage("### 4-gram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n4_s_",samp_perc, ".Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n4_s",samp_perc, ".Rds");
 if (!exists("ngram4")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
