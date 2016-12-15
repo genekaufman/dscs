@@ -3,7 +3,7 @@ source('load_data_filesV3.R')
 baseDataDir <- "data/en_US/";
 samp_perc <- 0.01;
 samp_perc <- 333;
-samp_perc <- 0.10;
+samp_perc <- 0.20;
 set.seed(42);
 
 if (!exists("betterMessage")) {
@@ -45,7 +45,7 @@ rm(baseDataDir);
 if (exists("data_combined_samp_filebase")) {rm(data_combined_samp_filebase);}
 if (exists("num_rows")) {rm(num_rows);}
 if (exists("num_samples")) {rm(num_samples);}
-if (exists("samp_perc")) {rm(samp_perc);}
+#if (exists("samp_perc")) {rm(samp_perc);}
 
 
 
