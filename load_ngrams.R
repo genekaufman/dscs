@@ -17,7 +17,7 @@ for(n in 1:MaxN_Files){
   betterMessage(paste('### Looking for: ', thisRDSfile));
   if (file.exists(thisRDSfilePath)) {
     betterMessage(paste(thisRDSfilePath, " exists, loading"));
-    thisRDS <- readRDS(thisRDSfilePath);
+    assign(thisRDS,readRDS(thisRDSfilePath));
   } else {
     betterMessage(paste(thisRDSfilePath, " doesn't exist, skipping"));
   }
