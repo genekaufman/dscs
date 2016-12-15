@@ -16,6 +16,7 @@ tokens <- data_combined_samp %>% tolower(); # %>%  word_tokenizer();
 
 tokenObj <- itoken(tokens);
 rm(data_combined_samp);
+rm(tokens);
 
 ########
 #Create unigram
