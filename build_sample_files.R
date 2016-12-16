@@ -1,17 +1,8 @@
-source('load_data_filesV3.R')
-
-baseDataDir <- "data/en_US/";
-samp_perc <- 0.01;
-samp_perc <- 333;
-samp_perc <- 0.2;
-set.seed(42);
-
-if (!exists("betterMessage")) {
-  betterMessage <- function(strIn) {
-    message(paste0('[',date(),'] ',strIn));
-
-  }
+if (!exists("funcs.loaded")) {
+  source('funcs.R')
 }
+
+source('load_data_filesV3.R')
 
 if (!exists("data_combined_samp")) {
   data_combined_samp_filebase <- paste0("data_combined_samp_",samp_perc);
@@ -40,8 +31,7 @@ betterMessage("### Data sampled!");
 
 
 rm(list=ls(pattern='RDSfile'));
-#rm(list=ls(pattern='full'));
-rm(baseDataDir);
+rm(list=ls(pattern='full'));
 if (exists("data_combined_samp_filebase")) {rm(data_combined_samp_filebase);}
 if (exists("num_rows")) {rm(num_rows);}
 if (exists("num_samples")) {rm(num_samples);}

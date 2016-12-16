@@ -1,10 +1,37 @@
+if (!exists("betterMessage")) {
+  betterMessage <- function(strIn) {
+    message(paste0('[',date(),'] ',strIn));
+
+  }
+}
+funcs.loaded <- TRUE;
+
+baseDataDir <- "data/en_US/";
+
+samp_perc <- 0.2;
+seed_primer <- 42;
+set.seed(seed_primer * samp_perc);
+
+MaxN_Files <- 10;
+
+term_count_min_val = 10; # minimum count for a term to be included in ngram
+
+
 testThe <- function() {
   xx <- ngram1$vocab[startsWith(ngram1$vocab$terms,"the"),1:2];
   xx;
 }
 
+makeNgramFileName <- function(n,s) {
+  thisFnam <- paste0("ngram_samp_", s,"_n",n);
+  thisFnam;
+
+}
+
+
+
 cc <- function() {
-  rm(list=ls()[ls()!="data_combined_samp" & ls()!="testThe" & ls()!="cc"]);
+  rm(list=ls()[ls()!="data_combined_full" & ls()!="data_combined_samp" & ls()!="testThe" & ls()!="cc"]);
 
 }
 

@@ -13,25 +13,24 @@ library(text2vec);
 library(tm);
 library(tokenizers);
 
-#tokens <- data_combined_samp %>%
-#          tolower() %>%
-#           tokenize_regex(pattern = "[,.;! ]");
+betterMessage("Tokenization started...");
 
+# break on everything that is not a letter or an apostrophes (for contractions and pluralization)
 tokens <- data_combined_samp %>%
-          tolower();
+          tolower() %>%
+          tokenize_regex((pattern="[^[a-z]|^\']"));
 
-# %>%  word_tokenizer();
+betterMessage("Creating token object ...");
 
-#tokenObj <- itoken(tokens,tokenizer = word_tokenizer );
-tokenObj <- itoken(tokens,tokenizer = wordpunct_tokenizer );
-#tokenObj <- itoken(tokens );
-#?rm(data_combined_samp);
+tokenObj <- itoken(tokens );
 rm(tokens);
+betterMessage("Tokenization complete");
+
 
 ########
 #Create unigram
 betterMessage("### Unigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n1_s",samp_perc, "f.Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n1_s",samp_perc, ".Rds");
 if (!exists("ngram1")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));

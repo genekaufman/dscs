@@ -1,7 +1,9 @@
+if (!exists("funcs.loaded")) {
+  source('funcs.R')
+}
+
 #library(caret)
 
-baseDataDir <- "data/en_US/";
-set.seed(42);
 
 readDataFile <- function(dataFileName) {
 #  tmpFile <- readLines(dataFileName,  encoding = "UTF-8" )
@@ -9,14 +11,6 @@ readDataFile <- function(dataFileName) {
 #  tmpFile <-as.data.frame(tmpFile)
   tmpFile
 }
-
-if (!exists("betterMessage")) {
-  betterMessage <- function(strIn) {
-    message(paste0('[',date(),'] ',strIn));
-
-  }
-}
-
 
 # build more manageable data files
 full_blogs_file <- "en_US.blogs.txt";
@@ -79,8 +73,7 @@ if (exists("data_news_full")) {rm(data_news_full);}
 if (exists("data_twitter_full")) {rm(data_twitter_full);}
 
 rm(list=ls(pattern='RDSfile'));
-#rm(list=ls(pattern='full_'));
-rm(baseDataDir);
+rm(list=ls(pattern='full_'));
 #rm(num_samples);
 rm(readDataFile);
 #rm(list=ls()[substr(ls(),1,5) != 'data_' ]);
