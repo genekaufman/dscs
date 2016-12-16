@@ -40,7 +40,7 @@ betterMessage("### Data sampled!");
 
 
 rm(list=ls(pattern='RDSfile'));
-rm(list=ls(pattern='full'));
+#rm(list=ls(pattern='full'));
 rm(baseDataDir);
 if (exists("data_combined_samp_filebase")) {rm(data_combined_samp_filebase);}
 if (exists("num_rows")) {rm(num_rows);}

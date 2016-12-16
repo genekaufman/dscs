@@ -11,22 +11,27 @@ term_count_min_val = 10;
 
 library(text2vec);
 library(tm);
-#library(tokenizers);
+library(tokenizers);
 
-tokens <- data_combined_samp %>% 
-          tolower() # %>%
-          # tokenize_regex(pattern = "[,.;]");
+#tokens <- data_combined_samp %>%
+#          tolower() %>%
+#           tokenize_regex(pattern = "[,.;! ]");
+
+tokens <- data_combined_samp %>%
+          tolower();
+
 # %>%  word_tokenizer();
 
 #tokenObj <- itoken(tokens,tokenizer = word_tokenizer );
-tokenObj <- itoken(tokens );
-rm(data_combined_samp);
+tokenObj <- itoken(tokens,tokenizer = wordpunct_tokenizer );
+#tokenObj <- itoken(tokens );
+#?rm(data_combined_samp);
 rm(tokens);
 
 ########
 #Create unigram
 betterMessage("### Unigram ###");
-ngram_RDSfile <- paste0(baseDataDir, "n1_s",samp_perc, "a.Rds");
+ngram_RDSfile <- paste0(baseDataDir, "n1_s",samp_perc, "f.Rds");
 if (!exists("ngram1")) {
   if (file.exists(ngram_RDSfile)) {
     betterMessage(paste(ngram_RDSfile, " exists, loading"));
@@ -34,11 +39,11 @@ if (!exists("ngram1")) {
   } else {
     betterMessage(paste(ngram_RDSfile, " doesn't exist, creating"));
 
+  #  stopwords= c(stopwords("english"),letters)) %>%
     ngram1 <- create_vocabulary(tokenObj, ngram = c(1L, 1L),
-                            stopwords= c(stopwords("english"),letters)) %>%
+                            stopwords= c(stopwords(language = "en"),letters)) %>%
           prune_vocabulary(term_count_min = term_count_min_val);
-    betterMessage("### 40 ###");
-    
+
     ngram1$vocab <- ngram1$vocab[order(ngram1$vocab$terms_counts,decreasing = TRUE)];
 
     saveRDS(ngram1,file=ngram_RDSfile);
