@@ -16,6 +16,8 @@ MaxN_Files <- 10;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
+Num2ResultsPerNgram <- 5;
+
 
 testThe <- function() {
   xx <- ngram1$vocab[startsWith(ngram1$vocab$terms,"the"),1:2];
@@ -28,136 +30,128 @@ makeNgramFileName <- function(n,s) {
 
 }
 
-
-
-cc <- function() {
-  rm(list=ls()[ls()!="data_combined_full" & ls()!="data_combined_samp" & ls()!="testThe" & ls()!="cc"]);
-
-}
-
-findTerms <- function(myterm,searchhere) {
-  xx <- searchhere[startsWith(names(searchhere),paste0(gsub(" ","_",myterm),"_"))];
-  xx;
-
-}
-
-findTermsNgrams <- function (myterm,sampPerc) {
-  MaxN_Files <- 2;
-  myterm <- paste0(gsub(" ","_",myterm));
-  message(paste("myterm:",myterm));
-
-  thisNgram <- paste0('n',1,'_s',sampPerc);
-  message(thisNgram);
-
-  if(exists(thisNgram)) {
-    message(paste("thisNgram class:",class(thisNgram)));
+chopTerm <- function(thisTerm,maxTokens){
+  mytermArray <- strsplit(thisTerm," ");
+  lenMyTerm <- length(mytermArray[[1]]);
+  if (lenMyTerm >= maxTokens) {
+    excess <- lenMyTerm - maxTokens + 2; # we want to use the biggest ngram, so that's an additional +1
+    thisTerm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
+    message("(",excess,"/",lenMyTerm,"/",maxTokens,") new term: ", thisTerm);
   }
+  thisTerm;
+}
 
-  for(n in 1:MaxN_Files){
-    thisRDS <- paste0("n", n,"_s",samp_perc);
-    thisRDSfile <- paste0(thisRDS, ".Rds");
-    thisRDSfilePath <- paste0(baseDataDir, thisRDSfile);
-#    betterMessage(paste('### Looking for: ', thisRDSfile));
-    if (file.exists(thisRDSfilePath)) {
-#      betterMessage(paste(thisRDSfilePath, " exists, loading"));
-      assign(thisRDS,readRDS(thisRDSfilePath));
-      #xx <- thisRDS$vocab[startsWith(thisRDS$vocab$terms,myterm),1:2];
-      xx <- n1_s0.5[['vocab']][startsWith(n1_s0.5[['vocab']][['terms']],myterm),1:2];
+predictTermsNgramsA <- function(myterm) {
 
-      xx <- xx[1:5,];
-      xx$ngram <- "n1";
+}
+
+predictTermsNgrams <- function (myterm, maxTokens=MaxN_Files) {
+  message("predictTermsNgrams maxTokens:",maxTokens);
+
+  myterm <- chopTerm(myterm,maxTokens);
+#  mytermArray <- strsplit(myterm," ");
+#  lenMyTerm <- length(mytermArray[[1]]);
+#  if (lenMyTerm > MaxN_Files) {
+#    excess <- lenMyTerm - MaxN_Files + 2; # we want to use the biggest ngram, so that's an additional +1
+#    myterm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
+#    message(paste("new term: ", myterm));
+#  }
+  output <- NULL;
+  searchTerm <- prepSearchTerm(myterm);
+  ngram2use <- str_count(searchTerm,"_") + 1;
+  message("ngram2use:",ngram2use);
+  thisNgram <- paste0("ngram",ngram2use);
+  if (exists(thisNgram)) {
+    # send myterm, not searchTerm, as calling prepSearchTerm a second time strips out _'s
+    xx <- getNgramResults(myterm,ngram2use);
+    abc <- nrow(xx);
+    numResults <- min(Num2ResultsPerNgram,nrow(xx));
+    if (!is.null(xx)) {
+      xx <- xx[1:numResults,];
+      xx$ngram <- paste0("n",ngram2use);
+      xx$pred_term <- gsub(searchTerm,"",xx$terms);
       if (exists("output")) {
         output <- rbind(xx,output);
       } else {
         output <- xx;
       }
     } else {
-#      betterMessage(paste(thisRDSfilePath, " doesn't exist, skipping"));
-    }
-  }
-  output;
-}
+      if (maxTokens > 2) {
+        message("maxTokens:",maxTokens);
+        nextTokens <- maxTokens - 2;
+        message("nextTokens:",nextTokens);
+        nextone <- predictTermsNgrams(myterm = myterm, maxTokens = nextTokens);
+        if (exists("output")) {
+          output <- rbind(nextone,output);
+        } else {
+          output <- nextone;
+        }
 
-
-findTermsNgrams0.5 <- function (myterm) {
-  myterm <- paste0(gsub(" ","_",myterm));
-  message(paste("myterm:",myterm));
-
-  if (exists("n1_s0.5")) {
-    xx <- n1_s0.5$vocab[startsWith(n1_s0.5$vocab$terms,myterm),1:2];
-    xx <- xx[1:5,];
-    xx$ngram <- "n1";
-    if (exists("output")) {
-      output <- rbind(xx,output);
-    } else {
-      output <- xx;
-    }
-  }
-  if (exists("n2_s0.5")) {
-    xx <- n2_s0.5$vocab[startsWith(n2_s0.5$vocab$terms,myterm),1:2];
-    xx <- xx[1:5,];
-    xx$ngram <- "n2";
-    if (exists("output")) {
-      output <- rbind(xx,output);
-    } else {
-      output <- xx;
+       # return (nextone);
+      }
     }
   }
 
+  if (!exists("output")) {
+    output <- "not found";
+  }
 
   output;
 }
 
-findTermsNgrams0.5a <- function (myterm) {
-  myterm <- paste0(gsub(" ","_",myterm));
-  message(paste("myterm:",myterm));
+prepSearchTerm <- function(ss) {
+  pst <- ss %>%
+    tolower() %>%
+    gsub(pattern="[^[a-z ]|^\'|^_]", replacement="");
+  pst <- paste0(gsub(" ","_",pst),"_");
+  pst;
+}
 
-  thisNgram <- paste0('n',1,'_s',0.5);
-  message(thisNgram);
-#  assign(aa,thisNgram);
-  aa <- copyObj(thisNgram);
-  class(aa);
-  length(aa)
-  if (exists("aa")) {
-#    xx <- aa[["vocab"]][startsWith(aa[["vocab"]][["terms"]],myterm),1:2];
-    xx <- aa["vocab"]["terms"];
-#    xx <- xx[1:5,];
-    xx$ngram <- "n1";
-    if (exists("output")) {
-      output <- rbind(xx,output);
+getNgramResults <- function(myterm,ngram2use) {
+  myterm <- prepSearchTerm(myterm);
+
+  thisNgram <- paste0("ngram",ngram2use);
+
+  if (exists(thisNgram)) {
+
+    thisNgram <- eval(parse(text = thisNgram));
+    xx <- thisNgram$vocab[startsWith(thisNgram$vocab$terms,myterm),1:2];
+    abc <- nrow(xx);
+
+    numResults <- min(Num2ResultsPerNgram,nrow(xx));
+#    if (!is.null(xx)) {
+    if (numResults > 0) {
+      zz <- xx[1:numResults,];
+      zz$ngram <- paste0("n",ngram2use);
+      zz$pred_term <- gsub(myterm,"",zz$terms);
+      return(zz);
     } else {
-      output <- xx;
+      return(NULL);
+    }
+  } else {
+    return(NULL);
+  }
+
+
+}
+
+
+findTermsNgrams <- function (myterm) {
+  numTokensInTerm <- str_count(myterm,"_") + 1;
+  for(n in 1:MaxN_Files){
+    ngResults <- getNgramResults(myterm,n);
+    if (exists("ngResults")) {
+      if (exists("output")) {
+        output <- rbind(ngResults,output);
+      } else {
+        output <- ngResults;
+      }
     }
   }
 
-  thisNgram <- paste0('n',2,'_s',0.5);
-  message(thisNgram);
-
-  aa <- copyObj(thisNgram);
-  if (exists("aa")) {
-    #    xx <- aa[["vocab"]][startsWith(aa[["vocab"]][["terms"]],myterm),1:2];
-    xx <- aa[["vocab"]][["terms"]];
-    #    xx <- xx[1:5,];
-    xx$ngram <- "n2";
-    if (exists("output")) {
-      output <- rbind(xx,output);
-    } else {
-      output <- xx;
-    }
+  if (!exists("output")) {
+    output <- "not found";
   }
-
 
   output;
-}
-
-copyObj <- function(thisObj) {
-#xx <- deparse(substitute(thisObj));
-  thisObj;
-}
-
-
-findTermsNgramsOLD <- function (myterm,searchhere) {
-  ss <- deparse(substitute(searchhere));
-  xx <- ngram3["vocab"][startsWith(ngram3["vocab"]["terms"],paste0(gsub(" ","_",myterm),"_"))]
-  xx;
 }
