@@ -68,9 +68,9 @@ if (!exists("data_combined_full")) {
   }
 }
 
-if (exists("data_blogs_full")) {rm(data_blogs_full);}
-if (exists("data_news_full")) {rm(data_news_full);}
-if (exists("data_twitter_full")) {rm(data_twitter_full);}
+#if (exists("data_blogs_full")) {rm(data_blogs_full);}
+#if (exists("data_news_full")) {rm(data_news_full);}
+#if (exists("data_twitter_full")) {rm(data_twitter_full);}
 
 rm(list=ls(pattern='RDSfile'));
 rm(list=ls(pattern='full_'));
