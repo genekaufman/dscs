@@ -1,3 +1,5 @@
+library(magrittr);
+library(stringr);
 if (!exists("betterMessage")) {
   betterMessage <- function(strIn) {
     message(paste0('[',date(),'] ',strIn));
@@ -17,7 +19,7 @@ MaxN_Files <- 10;
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
 Num2ResultsPerNgram <- 5;
-
+showNewTerm <- FALSE;
 
 testThe <- function() {
   xx <- ngram1$vocab[startsWith(ngram1$vocab$terms,"the"),1:2];
@@ -36,17 +38,31 @@ chopTerm <- function(thisTerm,maxTokens){
   if (lenMyTerm >= maxTokens) {
     excess <- lenMyTerm - maxTokens + 2; # we want to use the biggest ngram, so that's an additional +1
     thisTerm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
-    message("(",excess,"/",lenMyTerm,"/",maxTokens,") new term: ", thisTerm);
+    if (showNewTerm) { message("new term: ", thisTerm); }
   }
   thisTerm;
 }
 
-predictTermsNgramsA <- function(myterm) {
+predictTermsNgrams <- function(myterm) {
+  message("Incoming: ", myterm);
+  final<-NULL;
+
+  maxTokens <- MaxN_Files;
+
+  while(maxTokens > 1) {
+    myterm <- chopTerm(myterm,maxTokens);
+    interim <- predictTermsNgramsEngine(myterm,maxTokens );
+    if (!is.null(interim)) {
+      final <- rbind(final,interim);
+    }
+    maxTokens <- maxTokens - 1;
+  }
+  final;
 
 }
 
-predictTermsNgrams <- function (myterm, maxTokens=MaxN_Files) {
-  message("predictTermsNgrams maxTokens:",maxTokens);
+predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
+#  message("predictTermsNgrams maxTokens:",maxTokens);
 
   myterm <- chopTerm(myterm,maxTokens);
 #  mytermArray <- strsplit(myterm," ");
@@ -59,7 +75,7 @@ predictTermsNgrams <- function (myterm, maxTokens=MaxN_Files) {
   output <- NULL;
   searchTerm <- prepSearchTerm(myterm);
   ngram2use <- str_count(searchTerm,"_") + 1;
-  message("ngram2use:",ngram2use);
+#  message("ngram2use:",ngram2use);
   thisNgram <- paste0("ngram",ngram2use);
   if (exists(thisNgram)) {
     # send myterm, not searchTerm, as calling prepSearchTerm a second time strips out _'s
@@ -76,19 +92,19 @@ predictTermsNgrams <- function (myterm, maxTokens=MaxN_Files) {
         output <- xx;
       }
     } else {
-      if (maxTokens > 2) {
-        message("maxTokens:",maxTokens);
-        nextTokens <- maxTokens - 2;
-        message("nextTokens:",nextTokens);
-        nextone <- predictTermsNgrams(myterm = myterm, maxTokens = nextTokens);
-        if (exists("output")) {
-          output <- rbind(nextone,output);
-        } else {
-          output <- nextone;
-        }
+#      if (maxTokens > 2) {
+#        message("maxTokens:",maxTokens);
+#        nextTokens <- maxTokens - 2;
+      #        message("nextTokens:",nextTokens);
+      #        nextone <- predictTermsNgrams(myterm = myterm, maxTokens = nextTokens);
+      #        if (exists("output")) {
+      #          output <- rbind(nextone,output);
+      #        } else {
+      #          output <- nextone;
+      #        }
 
        # return (nextone);
-      }
+      #      }
     }
   }
 
