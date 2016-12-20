@@ -1,7 +1,6 @@
 if (!exists("funcs.loaded")) {
   source('funcs.R')
 }
-
 source('load_data_filesV3.R')
 
 if (!exists("data_combined_samp")) {
