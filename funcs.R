@@ -14,7 +14,7 @@ samp_perc <- 0.5;
 seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
-MaxN_Files <- 5;
+MaxN_Files <- 10;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
