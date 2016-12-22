@@ -17,6 +17,8 @@ tokens <- data_combined_samp %>%
 #          tokenize_lines()  %>%
           tokenize_regex((pattern="[^[a-z]|^\']"));
 
+
+
 betterMessage("Creating token object ...");
 
 tokenObj <- itoken(tokens );
@@ -34,11 +36,13 @@ for(n in 1:MaxN_Files){
   } else {
     betterMessage(paste(thisRDSfilePath, " doesn't exist, creating"));
     if (n > 1) {
-      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n)) %>%
-                prune_vocabulary(term_count_min = term_count_min_val);
+      # use only short list of stopwords (excluded.words)
+      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n),
+                                  stopwords= c(excluded.words,letters)) %>%
+                  prune_vocabulary(term_count_min = term_count_min_val);
 
     } else {
-      # only use stopwords for n1
+      # only use full list of stopwords for n1
       ngram <-  create_vocabulary(tokenObj, ngram = c(n, n),
                                 stopwords= c(stopwords(language = "en"),letters)) %>%
                 prune_vocabulary(term_count_min = term_count_min_val);
