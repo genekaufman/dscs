@@ -43,6 +43,33 @@ chopTerm <- function(thisTerm,maxTokens){
   thisTerm;
 }
 
+predictTermsNgramsV2 <- function(myterm) {
+  message("Incoming: ", myterm);
+  final<-NULL;
+
+  maxTokens <- MaxN_Files;
+  numTerms <- str_count(myterm," ");
+  if ((numTerms + 2) < maxTokens) {
+    maxTokens <- numTerms + 2;
+  }
+
+  while(maxTokens > 1) {
+    myterm <- chopTerm(myterm,maxTokens);
+    interim <- predictTermsNgramsEngine(myterm,maxTokens );
+    if (!is.null(interim)) {
+      final <- rbind(final,interim);
+      break;
+    }
+    maxTokens <- maxTokens - 1;
+  }
+  if (!is.null(final)) {
+   nfinal <- final[,1:4];
+   final <- nfinal;
+  }
+  final;
+
+}
+
 predictTermsNgrams <- function(myterm) {
   message("Incoming: ", myterm);
   final<-NULL;

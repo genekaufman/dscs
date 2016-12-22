@@ -9,6 +9,7 @@
 
 library(shiny)
 source('../load_ngrams.R')
+#library(xtable)
 
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
@@ -33,8 +34,10 @@ ui <- shinyUI(fluidPage(
         h4("Predicted text:"),
 #        textOutput("summary"),
         br(),
-#        ,        h4("Predicted text:"),
-        verbatimTextOutput("summary")
+        verbatimTextOutput("summary"),
+br(),
+verbatimTextOutput("summary2")
+
       )
    )
 ))
@@ -58,12 +61,7 @@ server <- shinyServer(function(input, output) {
     # input$goButton changes, this code will re-execute.
     input$goButton
 
-    # input$text is accessed here, so this reactive object will
-    # take a dependency on it. However, input$ is inside of
-    # isolate(), so this reactive object will NOT take a
-    # dependency on it; changes to input$n will therefore not
-    # trigger re-execution.
-    paste0('input$text is "', isolate(input$input_text))
+    isolate(predictTermsNgramsV2(input$input_text))
   })
 
 })
