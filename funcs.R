@@ -19,7 +19,7 @@ MaxN_Files <- 5;
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
 Num2ResultsPerNgram <- 5;
-showNewTerm <- TRUE;
+showNewTerm <- FALSE;
 
 excluded.words <- c("a","an","and","the");
 
@@ -40,7 +40,7 @@ chopTerm <- function(thisTerm,maxTokens){
   
   mytermArray <- strsplit(thisTerm," ");
   mytermArray2 <- unlist(mytermArray);
-  grepTerm <- paste0("\\b",paste(excluded.words,collapse = "|"),"\\b");
+  grepTerm <- paste0("\\b(",paste0(excluded.words,collapse = "|"),")\\b");
 #  grepTerm <- paste(excluded.words,collapse = "|");
 #  grepTerm <- paste0("[",paste(excluded.words,collapse = "|"),"]");
   if (showNewTerm) { message("grepTerm: ", grepTerm); }
@@ -61,7 +61,7 @@ chopTerm <- function(thisTerm,maxTokens){
 }
 
 predictTermsNgramsV2 <- function(myterm) {
-  message("Incoming: ", myterm);
+#  message("Incoming: ", myterm);
   final<-NULL;
 
   maxTokens <- MaxN_Files;
@@ -88,7 +88,7 @@ predictTermsNgramsV2 <- function(myterm) {
 }
 
 predictTermsNgrams <- function(myterm) {
-  message("Incoming: ", myterm);
+#  message("Incoming: ", myterm);
   final<-NULL;
 
   maxTokens <- MaxN_Files;
@@ -119,8 +119,8 @@ predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
   output <- NULL;
   searchTerm <- prepSearchTerm(myterm);
   ngram2use <- str_count(searchTerm,"_") + 1;
-  message("predictTermsNgramsEngine: ngram2use:",ngram2use);
-  message("predictTermsNgramsEngine: myterm:",myterm);
+#  message("predictTermsNgramsEngine: ngram2use:",ngram2use);
+#  message("predictTermsNgramsEngine: myterm:",myterm);
   thisNgram <- paste0("ngram",ngram2use);
   if (exists(thisNgram)) {
     # send myterm, not searchTerm, as calling prepSearchTerm a second time strips out _'s
