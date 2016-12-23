@@ -10,11 +10,11 @@ funcs.loaded <- TRUE;
 
 baseDataDir <- "data/en_US/";
 
-samp_perc <- 0.6;
+samp_perc <- 0.5;
 seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
-MaxN_Files <- 5;
+MaxN_Files <- 10;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
@@ -58,6 +58,16 @@ chopTerm <- function(thisTerm,maxTokens){
     if (showNewTerm) { message("52 new term: ", thisTerm); }
   }
   thisTerm;
+}
+
+getBestTerm <- function(myterm){
+  bestTerm <- predictTermsNgramsV2(myterm);
+  if (is.null(bestTerm)) {
+    thisOutput <- "Sorry... can't make a prediction";
+  } else {
+    thisOutput <- bestTerm$pred_term[1];
+  }
+  thisOutput;
 }
 
 predictTermsNgramsV2 <- function(myterm) {

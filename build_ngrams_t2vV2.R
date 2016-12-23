@@ -11,13 +11,16 @@ library(tokenizers);
 betterMessage("Tokenization started...");
 
 # break on everything that is not a letter or an apostrophes (for contractions and pluralization)
+#tokens <- data_combined_samp %>%
+#          tolower() %>%
+#          gsub(pattern="[.?!]", replacement="<EOL>") %>%
+##          tokenize_lines()  %>%
+#          tokenize_regex((pattern="[^[a-z]|^\']"));
+
 tokens <- data_combined_samp %>%
           tolower() %>%
-          gsub(pattern="[.?!]", replacement="<EOL>") %>%
-#          tokenize_lines()  %>%
+          tokenize_regex(pattern="[\\.\\!]") %>% unlist() %>%
           tokenize_regex((pattern="[^[a-z]|^\']"));
-
-
 
 betterMessage("Creating token object ...");
 
