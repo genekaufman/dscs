@@ -41,9 +41,10 @@ for(n in MinN_Files:MaxN_Files){
     betterMessage(paste(thisRDSfilePath, " exists, skipping\n"));
   } else {
     betterMessage(paste(thisRDSfilePath, " doesn't exist, creating"));
+    betterMessage(paste("excluded.words:",paste(excluded.words,sep = ",",collapse = " ")));
     if (n > 1) {
       # use only short list of stopwords (excluded.words)
-      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n), 
+      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n),
                                   stopwords= c(excluded.words,letters)) %>%
                   prune_vocabulary(term_count_min = term_count_min_val);
 
