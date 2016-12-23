@@ -29,6 +29,9 @@ rm(tokens);
 betterMessage("Tokenization complete");
 
 for(n in MinN_Files:MaxN_Files){
+  # require lower minimum count as N increases
+  term_count_min_val <- 21 - n;
+  if (term_count_min_val < 3) { term_count_min_val <- 3; }
   betterMessage(paste0('#### Building n-',n,' ####'));
   thisRDS <- makeNgramFileName(n,samp_perc);
   thisRDSfile <- paste0(thisRDS, ".Rds");
