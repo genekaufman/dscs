@@ -24,7 +24,10 @@ Num2ResultsPerNgram <- 5;
 showNewTerm <- FALSE;
 
 excluded.words <- c("a","an","and","the");
-
+use.excluded.words <- FALSE;
+if (use.excluded.words) {
+  excluded.words <- c();
+}
 
 testThe <- function() {
   xx <- ngram1$vocab[startsWith(ngram1$vocab$terms,"the"),1:2];
@@ -33,13 +36,16 @@ testThe <- function() {
 
 makeNgramFileName <- function(n,s) {
   thisFnam <- paste0("ngram_samp_", s,"_n",n);
+  if (!use.excluded.words) {
+    thisFnam <- paste0(thisFnam,"_NoExclWords");
+  }
   thisFnam;
 
 }
 
 chopTerm <- function(thisTerm,maxTokens){
   if (showNewTerm) { message("excluded.words: ", excluded.words); }
-  
+
   mytermArray <- strsplit(thisTerm," ");
   mytermArray2 <- unlist(mytermArray);
   grepTerm <- paste0("\\b(",paste0(excluded.words,collapse = "|"),")\\b");
