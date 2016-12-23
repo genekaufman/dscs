@@ -11,12 +11,11 @@ funcs.loaded <- TRUE;
 baseDataDir <- "data/en_US/";
 
 samp_perc <- 1;
-#samp_perc <- 0.33;
 seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
 MinN_Files <- 1;
-MaxN_Files <- 20;
+MaxN_Files <- 5;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
@@ -24,7 +23,7 @@ Num2ResultsPerNgram <- 5;
 showNewTerm <- TRUE;
 
 excluded.words <- c("a","an","and","the");
-use.excluded.words <- FALSE;
+use.excluded.words <- TRUE;
 if (!use.excluded.words) {
 #  message("29 use.excluded.words: ",use.excluded.words);
     excluded.words <- c("rekJunk");
