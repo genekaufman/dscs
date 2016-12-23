@@ -20,7 +20,7 @@ betterMessage("Tokenization started...");
 tokens <- data_combined_samp %>%
           tolower() %>%
           tokenize_regex(pattern="[\\.\\!]") %>% unlist() %>%
-          tokenize_regex((pattern="[^[a-z]|^\']"));
+          tokenize_regex((pattern="[^[a-z]|\']"));
 
 betterMessage("Creating token object ...");
 
@@ -40,7 +40,7 @@ for(n in 1:MaxN_Files){
     betterMessage(paste(thisRDSfilePath, " doesn't exist, creating"));
     if (n > 1) {
       # use only short list of stopwords (excluded.words)
-      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n),
+      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n), 
                                   stopwords= c(excluded.words,letters)) %>%
                   prune_vocabulary(term_count_min = term_count_min_val);
 

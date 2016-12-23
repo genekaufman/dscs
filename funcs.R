@@ -129,7 +129,7 @@ predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
   output <- NULL;
   searchTerm <- prepSearchTerm(myterm);
   ngram2use <- str_count(searchTerm,"_") + 1;
-#  message("predictTermsNgramsEngine: ngram2use:",ngram2use);
+#  message("predictTermsNgramsEngine: searchTerm:",searchTerm);
 #  message("predictTermsNgramsEngine: myterm:",myterm);
   thisNgram <- paste0("ngram",ngram2use);
   if (exists(thisNgram)) {
@@ -175,6 +175,7 @@ prepSearchTerm <- function(ss) {
     tolower() %>%
     gsub(pattern="[^[a-z ]|^\'|^_]", replacement="");
   pst <- paste0(gsub(" ","_",pst),"_");
+  pst <- pst %>% gsub(pattern = "\\_+",replacement="_");
   pst;
 }
 
