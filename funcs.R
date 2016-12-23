@@ -10,11 +10,12 @@ funcs.loaded <- TRUE;
 
 baseDataDir <- "data/en_US/";
 
-samp_perc <- 0.5;
+samp_perc <- 0.75;
 seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
-MaxN_Files <- 10;
+MinN_Files <- 4;
+MaxN_Files <- 15;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 

@@ -28,7 +28,7 @@ tokenObj <- itoken(tokens );
 rm(tokens);
 betterMessage("Tokenization complete");
 
-for(n in 1:MaxN_Files){
+for(n in MinN_Files:MaxN_Files){
   betterMessage(paste0('#### Building n-',n,' ####'));
   thisRDS <- makeNgramFileName(n,samp_perc);
   thisRDSfile <- paste0(thisRDS, ".Rds");
