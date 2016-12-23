@@ -16,18 +16,18 @@ seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
 MinN_Files <- 1;
-MaxN_Files <- 5;
+MaxN_Files <- 20;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
 Num2ResultsPerNgram <- 5;
-showNewTerm <- FALSE;
+showNewTerm <- TRUE;
 
 excluded.words <- c("a","an","and","the");
 use.excluded.words <- FALSE;
 if (!use.excluded.words) {
 #  message("29 use.excluded.words: ",use.excluded.words);
-    excluded.words <- c();
+    excluded.words <- c("rekJunk");
 }
 #message("32 excluded.words: ",excluded.words);
 
@@ -46,14 +46,14 @@ makeNgramFileName <- function(n,s) {
 }
 
 chopTerm <- function(thisTerm,maxTokens){
-  if (showNewTerm) { message("excluded.words: ", excluded.words); }
+#  if (showNewTerm) { message("excluded.words: ", excluded.words); }
 
   mytermArray <- strsplit(thisTerm," ");
   mytermArray2 <- unlist(mytermArray);
   grepTerm <- paste0("\\b(",paste0(excluded.words,collapse = "|"),")\\b");
 #  grepTerm <- paste(excluded.words,collapse = "|");
 #  grepTerm <- paste0("[",paste(excluded.words,collapse = "|"),"]");
-  if (showNewTerm) { message("grepTerm: ", grepTerm); }
+#  if (showNewTerm) { message("grepTerm: ", grepTerm); }
   mytermArray <- mytermArray2[!grepl(grepTerm,mytermArray2)]
 
 #  lenMyTerm <- length(mytermArray[[1]]);
@@ -62,10 +62,10 @@ chopTerm <- function(thisTerm,maxTokens){
     excess <- lenMyTerm - maxTokens + 2; # we want to use the biggest ngram, so that's an additional +1
 #    thisTerm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
     thisTerm <- paste(mytermArray[excess:lenMyTerm],collapse = " ");
-    if (showNewTerm) { message("49 new term: ", thisTerm); }
+#    if (showNewTerm) { message("49 new term: ", thisTerm); }
   } else { # we still want to benefit from stripping out the excluded words
     thisTerm <- paste(mytermArray,collapse = " ");
-    if (showNewTerm) { message("52 new term: ", thisTerm); }
+#    if (showNewTerm) { message("52 new term: ", thisTerm); }
   }
   thisTerm;
 }
@@ -139,7 +139,7 @@ predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
   output <- NULL;
   searchTerm <- prepSearchTerm(myterm);
   ngram2use <- str_count(searchTerm,"_") + 1;
-#  message("predictTermsNgramsEngine: searchTerm:",searchTerm);
+  if (showNewTerm) {message("predictTermsNgramsEngine: searchTerm:",searchTerm);}
 #  message("predictTermsNgramsEngine: myterm:",myterm);
   thisNgram <- paste0("ngram",ngram2use);
   if (exists(thisNgram)) {
