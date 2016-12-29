@@ -17,7 +17,8 @@ samp_perc <- 0.5;
 seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
-MaxN_Files <- 10;
+MinN_Files <- 1;
+MaxN_Files <- 5;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
@@ -25,22 +26,29 @@ Num2ResultsPerNgram <- 5;
 showNewTerm <- FALSE;
 
 excluded.words <- c("a","an","and","the");
+use.excluded.words <- TRUE;
+if (!use.excluded.words) {
+    excluded.words <- c("rekJunk");
+}
 
 makeNgramFileName <- function(n,s) {
   thisFnam <- paste0("ngram_samp_", s,"_n",n);
+  if (!use.excluded.words) {
+    thisFnam <- paste0(thisFnam,"_NoExclWords");
+  }
   thisFnam;
 
 }
 
 chopTerm <- function(thisTerm,maxTokens){
-  if (showNewTerm) { message("excluded.words: ", excluded.words); }
+#  if (showNewTerm) { message("excluded.words: ", excluded.words); }
 
   mytermArray <- strsplit(thisTerm," ");
   mytermArray2 <- unlist(mytermArray);
   grepTerm <- paste0("\\b(",paste0(excluded.words,collapse = "|"),")\\b");
 #  grepTerm <- paste(excluded.words,collapse = "|");
 #  grepTerm <- paste0("[",paste(excluded.words,collapse = "|"),"]");
-  if (showNewTerm) { message("grepTerm: ", grepTerm); }
+#  if (showNewTerm) { message("grepTerm: ", grepTerm); }
   mytermArray <- mytermArray2[!grepl(grepTerm,mytermArray2)]
 
 #  lenMyTerm <- length(mytermArray[[1]]);
@@ -49,10 +57,10 @@ chopTerm <- function(thisTerm,maxTokens){
     excess <- lenMyTerm - maxTokens + 2; # we want to use the biggest ngram, so that's an additional +1
 #    thisTerm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
     thisTerm <- paste(mytermArray[excess:lenMyTerm],collapse = " ");
-    if (showNewTerm) { message("49 new term: ", thisTerm); }
+#    if (showNewTerm) { message("49 new term: ", thisTerm); }
   } else { # we still want to benefit from stripping out the excluded words
     thisTerm <- paste(mytermArray,collapse = " ");
-    if (showNewTerm) { message("52 new term: ", thisTerm); }
+#    if (showNewTerm) { message("52 new term: ", thisTerm); }
   }
   thisTerm;
 }

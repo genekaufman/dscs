@@ -28,7 +28,10 @@ tokenObj <- itoken(tokens );
 rm(tokens);
 betterMessage("Tokenization complete");
 
-for(n in 1:MaxN_Files){
+for(n in MinN_Files:MaxN_Files){
+  # require lower minimum count as N increases
+  term_count_min_val <- 21 - n;
+  if (term_count_min_val < 3) { term_count_min_val <- 3; }
   betterMessage(paste0('#### Building n-',n,' ####'));
   thisRDS <- makeNgramFileName(n,samp_perc);
   thisRDSfile <- paste0(thisRDS, ".Rds");
@@ -38,9 +41,10 @@ for(n in 1:MaxN_Files){
     betterMessage(paste(thisRDSfilePath, " exists, skipping\n"));
   } else {
     betterMessage(paste(thisRDSfilePath, " doesn't exist, creating"));
+    betterMessage(paste("excluded.words:",paste(excluded.words,sep = ",",collapse = " ")));
     if (n > 1) {
       # use only short list of stopwords (excluded.words)
-      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n), 
+      ngram <-  create_vocabulary(tokenObj, ngram = c(n, n),
                                   stopwords= c(excluded.words,letters)) %>%
                   prune_vocabulary(term_count_min = term_count_min_val);
 
