@@ -19,6 +19,19 @@ for(n in 1:MaxN_Files){
       betterMessage(paste(thisRDSfilePath, " doesn't exist, skipping"));
     }
   }
+
+  if (exists(thisNgramObjName)) {
+    thisNgram <- paste0("ngram",n);
+    thisNgram <- eval(parse(text = thisNgram));
+    if (!("terms_perc" %in% colnames(thisNgram$vocab))) {
+      betterMessage(paste0("27 terms_perc not evaluated for N-",n));
+      sumcount <- sum(thisNgram$vocab$terms_counts);
+      ngSums <- sapply(thisNgram$vocab$terms_counts,function(x){x / sumcount})
+      thisNgram$vocab <- cbind(thisNgram$vocab[,1:2], terms_perc = unlist(ngSums))
+      thisColnames <- colnames(thisNgram$vocab);
+      betterMessage(paste(thisColnames,"\n"))
+    }
+  }
 }
 
 betterMessage("## ngrams ready!");

@@ -1,5 +1,8 @@
 library(magrittr);
 library(stringr);
+library(dplyr);
+library(sqldf);
+
 if (!exists("betterMessage")) {
   betterMessage <- function(strIn) {
     message(paste0('[',date(),'] ',strIn));
@@ -23,12 +26,6 @@ showNewTerm <- FALSE;
 
 excluded.words <- c("a","an","and","the");
 
-
-testThe <- function() {
-  xx <- ngram1$vocab[startsWith(ngram1$vocab$terms,"the"),1:2];
-  xx;
-}
-
 makeNgramFileName <- function(n,s) {
   thisFnam <- paste0("ngram_samp_", s,"_n",n);
   thisFnam;
@@ -37,7 +34,7 @@ makeNgramFileName <- function(n,s) {
 
 chopTerm <- function(thisTerm,maxTokens){
   if (showNewTerm) { message("excluded.words: ", excluded.words); }
-  
+
   mytermArray <- strsplit(thisTerm," ");
   mytermArray2 <- unlist(mytermArray);
   grepTerm <- paste0("\\b(",paste0(excluded.words,collapse = "|"),")\\b");
@@ -60,8 +57,8 @@ chopTerm <- function(thisTerm,maxTokens){
   thisTerm;
 }
 
-getBestTerm <- function(myterm){
-  bestTerm <- predictTermsNgramsV2(myterm);
+getBestTermSBO <- function(myterm){
+  bestTerm <- predictTermsNgramsSBO(myterm);
   if (is.null(bestTerm)) {
     thisOutput <- "Sorry... can't make a prediction";
   } else {
@@ -70,7 +67,7 @@ getBestTerm <- function(myterm){
   thisOutput;
 }
 
-predictTermsNgramsV2 <- function(myterm) {
+predictTermsNgramsSBO <- function(myterm, showAllNgrams = FALSE) {
 #  message("Incoming: ", myterm);
   final<-NULL;
 
@@ -82,32 +79,10 @@ predictTermsNgramsV2 <- function(myterm) {
 
   while(maxTokens > 1) {
     myterm <- chopTerm(myterm,maxTokens);
-    interim <- predictTermsNgramsEngine(myterm,maxTokens );
+    interim <- predictTermsNgramsEngineSBO(myterm,maxTokens );
     if (!is.null(interim)) {
       final <- rbind(final,interim);
-      break;
-    }
-    maxTokens <- maxTokens - 1;
-  }
-  if (!is.null(final)) {
-   nfinal <- final[,1:4];
-   final <- nfinal;
-  }
-  final;
-
-}
-
-predictTermsNgrams <- function(myterm) {
-#  message("Incoming: ", myterm);
-  final<-NULL;
-
-  maxTokens <- MaxN_Files;
-
-  while(maxTokens > 1) {
-    myterm <- chopTerm(myterm,maxTokens);
-    interim <- predictTermsNgramsEngine(myterm,maxTokens );
-    if (!is.null(interim)) {
-      final <- rbind(final,interim);
+      if (!showAllNgrams) { break; }
     }
     maxTokens <- maxTokens - 1;
   }
@@ -115,7 +90,7 @@ predictTermsNgrams <- function(myterm) {
 
 }
 
-predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
+predictTermsNgramsEngineSBO <- function (myterm, maxTokens=MaxN_Files) {
 #  message("predictTermsNgrams maxTokens:",maxTokens);
 
   myterm <- chopTerm(myterm,maxTokens);
@@ -129,12 +104,12 @@ predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
   output <- NULL;
   searchTerm <- prepSearchTerm(myterm);
   ngram2use <- str_count(searchTerm,"_") + 1;
-#  message("predictTermsNgramsEngine: searchTerm:",searchTerm);
-#  message("predictTermsNgramsEngine: myterm:",myterm);
+#  message("predictTermsNgramsEngineSBO: searchTerm:",searchTerm);
+#  message("predictTermsNgramsEngineSBO: myterm:",myterm);
   thisNgram <- paste0("ngram",ngram2use);
   if (exists(thisNgram)) {
     # send myterm, not searchTerm, as calling prepSearchTerm a second time strips out _'s
-    xx <- getNgramResults(myterm,ngram2use);
+    xx <- getNgramResultsSBO(myterm,ngram2use);
     abc <- nrow(xx);
     numResults <- min(Num2ResultsPerNgram,nrow(xx));
     if (!is.null(xx)) {
@@ -170,6 +145,141 @@ predictTermsNgramsEngine <- function (myterm, maxTokens=MaxN_Files) {
   output;
 }
 
+getBestPrediction_MYBO <- function(myterm, showAllNgrams = TRUE, includeUnigrams = FALSE) {
+  #  message("Incoming: ", myterm);
+  bestTerm<-NULL;
+  searchTerm <- prepSearchTerm(myterm);
+  myout <- predictTerms_MYBO(myterm);
+  #add in unigrams
+  if (includeUnigrams) {
+  nn <- ngram1$vocab[which(ngram1$vocab$terms %in% unique(myout$pred_term)),]
+  nn <- cbind(nn,ngram="n1",pred_term=nn$terms)
+  myout <- rbind(myout,nn);
+  rm(nn)
+  }
+
+  n <- sapply(myout$ngram,function(x) {gsub("n","",x)})
+  myout <- cbind(myout,n)
+  wx <- sapply(myout,function(x) {as.numeric(myout$n) * myout$terms_perc * 100})
+  myout <- cbind(myout,weight = wx[,1])
+  rm(wx)
+  myout2 <- myout %>% group_by(pred_term) %>% summarize(total_weight = sum(weight), max_n = max(ngram))
+  bestTerm <- myout2[order(myout2$total_weight,decreasing=TRUE),]
+
+  if (is.null(bestTerm)) {
+    thisOutput <- "Sorry... can't make a prediction";
+  } else {
+    thisOutput <- bestTerm$pred_term[1];
+    thisOutput <- bestTerm[1,];
+    #    thisOutput <- bestTerm[1:5,]
+  }
+  thisOutput;
+
+}
+
+predictTerms_MYBO <- function(myterm, showAllNgrams = TRUE) {
+#  message("Incoming: ", myterm);
+  final<-NULL;
+
+  maxTokens <- MaxN_Files;
+  numTerms <- str_count(myterm," ");
+  if ((numTerms + 2) < maxTokens) {
+    maxTokens <- numTerms + 2;
+  }
+
+  while(maxTokens > 1) {
+    myterm <- chopTerm(myterm,maxTokens);
+    interim <- predictTermsEngine_MYBO(myterm,maxTokens );
+    if (!is.null(interim)) {
+      final <- rbind(final,interim);
+      if (!showAllNgrams) { break; }
+    }
+    maxTokens <- maxTokens - 1;
+  }
+  final;
+
+}
+
+predictTerms_KBO <- function(myterm, showAllNgrams = TRUE) {
+  #  message("Incoming: ", myterm);
+  final<-NULL;
+
+  maxTokens <- MaxN_Files;
+  maxTokens <- 4;
+  numTerms <- str_count(myterm," ");
+  if ((numTerms + 2) < maxTokens) {
+    maxTokens <- numTerms + 2;
+  }
+
+  while(maxTokens >= 1) {
+    myterm <- chopTerm(myterm,maxTokens);
+    interim <- predictTermsEngine_MYBO(myterm,maxTokens );
+    if (!is.null(interim)) {
+      final <- rbind(final,interim);
+      if (!showAllNgrams) { break; }
+    }
+    maxTokens <- maxTokens - 1;
+  }
+  final;
+
+}
+
+predictTermsEngine_MYBO <- function (myterm, maxTokens=MaxN_Files) {
+#  message("predictTermsNgrams maxTokens:",maxTokens);
+
+  myterm <- chopTerm(myterm,maxTokens);
+#  mytermArray <- strsplit(myterm," ");
+#  lenMyTerm <- length(mytermArray[[1]]);
+#  if (lenMyTerm > MaxN_Files) {
+#    excess <- lenMyTerm - MaxN_Files + 2; # we want to use the biggest ngram, so that's an additional +1
+#    myterm <- paste(mytermArray[[1]][excess:lenMyTerm],collapse = " ");
+#    message(paste("new term: ", myterm));
+#  }
+  output <- NULL;
+  searchTerm <- prepSearchTerm(myterm);
+  ngram2use <- str_count(searchTerm,"_") + 1;
+#  message("predictTermsNgramsEngineSBO: searchTerm:",searchTerm);
+#  message("predictTermsNgramsEngineSBO: myterm:",myterm);
+  thisNgram <- paste0("ngram",ngram2use);
+  if (exists(thisNgram)) {
+    # send myterm, not searchTerm, as calling prepSearchTerm a second time strips out _'s
+    xx <- getNgramResults_MYBO(myterm,ngram2use);
+    ##numResults <- min(Num2ResultsPerNgram,nrow(xx));
+    numResults <- nrow(xx);
+    if (!is.null(xx)) {
+      xx <- xx[1:numResults,];
+      xx$ngram <- paste0("n",ngram2use);
+      xx$pred_term <- gsub(searchTerm,"",xx$terms);
+      if (exists("output")) {
+        output <- rbind(xx,output);
+      } else {
+        output <- xx;
+      }
+    } else {
+#      if (maxTokens > 2) {
+#        message("maxTokens:",maxTokens);
+#        nextTokens <- maxTokens - 2;
+      #        message("nextTokens:",nextTokens);
+      #        nextone <- predictTermsNgrams(myterm = myterm, maxTokens = nextTokens);
+      #        if (exists("output")) {
+      #          output <- rbind(nextone,output);
+      #        } else {
+      #          output <- nextone;
+      #        }
+
+       # return (nextone);
+      #      }
+    }
+  }
+
+  if (!exists("output")) {
+    output <- "not found";
+  }
+
+  output;
+}
+
+
 prepSearchTerm <- function(ss) {
   pst <- ss %>%
     tolower() %>%
@@ -179,7 +289,8 @@ prepSearchTerm <- function(ss) {
   pst;
 }
 
-getNgramResults <- function(myterm,ngram2use) {
+
+getNgramResults_MYBO <- function(myterm,ngram2use) {
   myterm <- prepSearchTerm(myterm);
 
   thisNgram <- paste0("ngram",ngram2use);
@@ -187,7 +298,35 @@ getNgramResults <- function(myterm,ngram2use) {
   if (exists(thisNgram)) {
 
     thisNgram <- eval(parse(text = thisNgram));
-    xx <- thisNgram$vocab[startsWith(thisNgram$vocab$terms,myterm),1:2];
+    xx <- thisNgram$vocab[startsWith(thisNgram$vocab$terms,myterm),];
+#    numResults <- min(Num2ResultsPerNgram,nrow(xx));
+    numResults <- nrow(xx);
+#    if (!is.null(xx)) {
+    if (numResults > 0) {
+      zz <- xx[1:numResults,];
+      zz$ngram <- paste0("n",ngram2use);
+      zz$pred_term <- gsub(myterm,"",zz$terms);
+      return(zz);
+    } else {
+      return(NULL);
+    }
+  } else {
+    return(NULL);
+  }
+
+
+}
+
+
+getNgramResultsSBO <- function(myterm,ngram2use) {
+  myterm <- prepSearchTerm(myterm);
+
+  thisNgram <- paste0("ngram",ngram2use);
+
+  if (exists(thisNgram)) {
+
+    thisNgram <- eval(parse(text = thisNgram));
+    xx <- thisNgram$vocab[startsWith(thisNgram$vocab$terms,myterm),];
     abc <- nrow(xx);
 
     numResults <- min(Num2ResultsPerNgram,nrow(xx));
@@ -208,10 +347,11 @@ getNgramResults <- function(myterm,ngram2use) {
 }
 
 
+# NOT USED #
 findTermsNgrams <- function (myterm) {
   numTokensInTerm <- str_count(myterm,"_") + 1;
   for(n in 1:MaxN_Files){
-    ngResults <- getNgramResults(myterm,n);
+    ngResults <- getNgramResultsSBO(myterm,n);
     if (exists("ngResults")) {
       if (exists("output")) {
         output <- rbind(ngResults,output);
@@ -226,4 +366,16 @@ findTermsNgrams <- function (myterm) {
   }
 
   output;
+}
+
+
+junk <- function() {
+
+  betterMessage("start");
+  sumcount <- sum(ngram1$vocab$terms_counts);
+  ngSums <- sapply(ngram1$vocab$terms_counts,function(x){x / sumcount})
+  ngram1$vocab <- cbind(ngram1$vocab, terms_perc = unlist(ngSums))
+betterMessage("finish");
+
+
 }

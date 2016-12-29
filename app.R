@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-source('../load_ngrams.R')
+source('load_ngrams.R')
 #library(xtable)
 
 # Define UI for application that draws a histogram
@@ -61,7 +61,7 @@ server <- shinyServer(function(input, output) {
     # input$goButton changes, this code will re-execute.
     input$goButton
 
-    isolate(predictTermsNgramsV2(input$input_text))
+    isolate(predictTermsNgramsSBO(input$input_text))
   })
 
 })
