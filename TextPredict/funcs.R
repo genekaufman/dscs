@@ -18,7 +18,7 @@ seed_primer <- 42;
 set.seed(seed_primer * samp_perc);
 
 MinN_Files <- 1;
-MaxN_Files <- 5;
+MaxN_Files <- 10;
 
 term_count_min_val = 10; # minimum count for a term to be included in ngram
 
@@ -70,7 +70,11 @@ getBestTermSBO <- function(myterm){
   if (is.null(bestTerm)) {
     thisOutput <- "Sorry... can't make a prediction";
   } else {
+#    print (bestTerm);
     thisOutput <- bestTerm$pred_term[1];
+    thisOutput <- c(bestTerm$pred_term,bestTerm$terms_perc,bestTerm$ngram);
+    thisOutput <- bestTerm[1,];
+ #   print (thisOutput);
   }
   thisOutput;
 }
@@ -153,7 +157,7 @@ predictTermsNgramsEngineSBO <- function (myterm, maxTokens=MaxN_Files) {
   output;
 }
 
-getBestPrediction_MYBO <- function(myterm, showAllNgrams = TRUE, includeUnigrams = FALSE) {
+getBestPrediction_MYBO <- function(myterm, showAllNgrams = F, includeUnigrams = FALSE) {
   #  message("Incoming: ", myterm);
   bestTerm<-NULL;
   searchTerm <- prepSearchTerm(myterm);
@@ -376,14 +380,12 @@ findTermsNgrams <- function (myterm) {
   output;
 }
 
+zzLogFile <- file("logfile.txt", open = "wt")
+log2File <- function(thisLine) {
 
-junk <- function() {
-
-  betterMessage("start");
-  sumcount <- sum(ngram1$vocab$terms_counts);
-  ngSums <- sapply(ngram1$vocab$terms_counts,function(x){x / sumcount})
-  ngram1$vocab <- cbind(ngram1$vocab, terms_perc = unlist(ngSums))
-betterMessage("finish");
-
-
+  betterMessage(paste("SearchTerm:",thisLine));
+  sink(zzLogFile,append = TRUE)
+  cat(paste0('[',date(),'] ',thisLine));
+  cat("\n");
+  sink()
 }

@@ -1,0 +1,8 @@
+name: TextPredict
+account: genekaufman
+server: shinyapps.io
+bundleId: 665478
+url: https://genekaufman.shinyapps.io/TextPredict/
+when: 1483204769.29259
+asMultiple: FALSE
+asStatic: FALSE
